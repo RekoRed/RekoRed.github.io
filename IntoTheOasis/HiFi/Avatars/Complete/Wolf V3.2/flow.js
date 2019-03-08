@@ -95,7 +95,7 @@ CUSTOM_FLOW_DATA = {
         "radius": 0.04,
         "gravity": 0.001,
         "damping": 0.4,
-        "inertia": 1,
+        "inertia": 0.55,
         "delta": 0.4
     },
     "RightEar": {
