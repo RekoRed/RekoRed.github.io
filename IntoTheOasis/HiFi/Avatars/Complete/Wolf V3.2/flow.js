@@ -91,16 +91,16 @@ CUSTOM_FLOW_DATA = {
     },
     "LeftEar": {
         "active": true,
-        "stiffness": 0.85,
+        "stiffness": 0.45,
         "radius": 0.04,
         "gravity": 0.001,
         "damping": 0.4,
-        "inertia": 0.55,
+        "inertia": 1,
         "delta": 0.4
     },
     "RightEar": {
         "active": true,
-        "stiffness": 0.85,
+        "stiffness": 0.45,
         "radius": 0.04,
         "gravity": 0.001,
         "damping": 0.4,
