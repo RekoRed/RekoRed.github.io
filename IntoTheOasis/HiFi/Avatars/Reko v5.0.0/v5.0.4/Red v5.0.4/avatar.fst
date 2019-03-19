@@ -1,7 +1,6 @@
 name = Red v5.0.4
 scale = 1
 filename = Reko_v5.0.4.fbx
-script = flow.js
 marketplaceID = {00000000-0000-0000-0000-000000000000}
 texdir = textures
 joint = jointLean = Spine
@@ -110,3 +109,4 @@ jointIndex = LeftToeEnd = 17
 jointIndex = LeftHandRing3 = 62
 jointIndex = LeftFoot = 15
 jointIndex = RightHand1_end = 30
+script = flow.js
