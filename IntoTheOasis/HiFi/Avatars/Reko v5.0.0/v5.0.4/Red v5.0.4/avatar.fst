@@ -1,0 +1,112 @@
+name = Red v5.0.4
+scale = 1
+filename = Reko_v5.0.4.fbx
+script = flow.js
+marketplaceID = {00000000-0000-0000-0000-000000000000}
+texdir = textures
+joint = jointLean = Spine
+joint = jointEyeRight = RightEye
+joint = jointNeck = Neck
+joint = jointEyeLeft = LeftEye
+joint = jointRoot = Hips
+joint = jointHead = Head
+joint = jointLeftHand = LeftHand
+joint = jointRightHand = RightHand
+freeJoint = RightForeArm
+freeJoint = RightArm
+freeJoint = LeftForeArm
+freeJoint = LeftArm
+jointIndex = Spine1 = 20
+jointIndex = LeftHandThumb3 = 72
+jointIndex = HifiArmature = 1
+jointIndex = simLeftEar2 = 86
+jointIndex = LeftHandMiddle4 = 78
+jointIndex = SimTail3_end = 6
+jointIndex = RightHandMiddle4_end = 50
+jointIndex = RightHand1 = 29
+jointIndex = simRightEar2 = 83
+jointIndex = LeftHandMiddle3 = 77
+jointIndex = Spine2 = 21
+jointIndex = RightLeg = 8
+jointIndex = RightForeArm = 24
+jointIndex = RightUpLeg = 7
+jointIndex = SimTail1 = 3
+jointIndex = RightHandRing4_end = 40
+jointIndex = RightHandMiddle3 = 48
+jointIndex = LeftHandPinky3 = 57
+jointIndex = RightFoot = 9
+jointIndex = RightHandPinky4 = 44
+jointIndex = RightHandPinky1 = 41
+jointIndex = LeftHandPinky4_end = 59
+jointIndex = LeftHandRing4 = 63
+jointIndex = RightHandThumb1 = 26
+jointIndex = RightHandPinky4_end = 45
+jointIndex = LeftEye_end = 89
+jointIndex = LeftLeg = 14
+jointIndex = LeftHandPinky1 = 55
+jointIndex = LeftHandThumb2 = 71
+jointIndex = LeftHandIndex4_end = 69
+jointIndex = LeftHand1 = 73
+jointIndex = Hips = 2
+jointIndex = RightHandMiddle4 = 49
+jointIndex = LeftHandIndex1 = 65
+jointIndex = LeftHand1_end = 74
+jointIndex = simLeftEar1 = 85
+jointIndex = RightEye_end = 91
+jointIndex = LeftUpLeg = 13
+jointIndex = RightHand = 25
+jointIndex = RightHandRing1 = 36
+jointIndex = RightToeBase = 10
+jointIndex = Body = 0
+jointIndex = SimTail3 = 5
+jointIndex = RightToeEnd = 11
+jointIndex = LeftToeEnd_end = 18
+jointIndex = RightHandRing3 = 38
+jointIndex = LeftForeArm = 53
+jointIndex = LeftToeBase = 16
+jointIndex = LeftHand = 54
+jointIndex = RightHandMiddle2 = 47
+jointIndex = RightShoulder = 22
+jointIndex = LeftHandIndex2 = 66
+jointIndex = RightArm = 23
+jointIndex = Spine = 19
+jointIndex = LeftHandRing2 = 61
+jointIndex = RightHandIndex1 = 31
+jointIndex = LeftShoulder = 51
+jointIndex = LeftEye = 88
+jointIndex = simRightEar1 = 82
+jointIndex = RightHandThumb2 = 27
+jointIndex = RightHandPinky3 = 43
+jointIndex = LeftHandRing4_end = 64
+jointIndex = RightHandIndex4 = 34
+jointIndex = RightHandRing2 = 37
+jointIndex = LeftHandMiddle4_end = 79
+jointIndex = LeftHandThumb1 = 70
+jointIndex = LeftHandPinky4 = 58
+jointIndex = RightHandMiddle1 = 46
+jointIndex = LeftHandRing1 = 60
+jointIndex = LeftHandMiddle1 = 75
+jointIndex = RightHandIndex3 = 33
+jointIndex = RightHandThumb3 = 28
+jointIndex = RightEye = 90
+jointIndex = SimTail2 = 4
+jointIndex = RightHandPinky2 = 42
+jointIndex = Neck = 80
+jointIndex = Head1 = 92
+jointIndex = RightHandIndex4_end = 35
+jointIndex = LeftHandIndex4 = 68
+jointIndex = Head = 81
+jointIndex = LeftHandIndex3 = 67
+jointIndex = LeftHandMiddle2 = 76
+jointIndex = Head1_end = 93
+jointIndex = RightToeEnd_end = 12
+jointIndex = RightHandRing4 = 39
+jointIndex = LeftHandPinky2 = 56
+jointIndex = simLeftEar2_end = 87
+jointIndex = RightHandIndex2 = 32
+jointIndex = LeftArm = 52
+jointIndex = simRightEar2_end = 84
+jointIndex = LeftToeEnd = 17
+jointIndex = LeftHandRing3 = 62
+jointIndex = LeftFoot = 15
+jointIndex = RightHand1_end = 30
