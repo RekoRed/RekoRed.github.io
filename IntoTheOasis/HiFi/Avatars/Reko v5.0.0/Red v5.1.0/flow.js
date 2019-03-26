@@ -101,7 +101,7 @@ CUSTOM_FLOW_DATA = {
     },
     "RightEar": {
         "active": true,
-        "stiffness": 0.35,
+        "stiffness": 0.65,
         "radius": 0.04,
         "gravity": 0.001,
         "damping": 0.75,
@@ -110,7 +110,7 @@ CUSTOM_FLOW_DATA = {
     },
     "RightEar2_end": {
         "active": true,
-        "stiffness": 0.35,
+        "stiffness": 0.65,
         "radius": 0.04,
         "gravity": 0.001,
         "damping": 0.75,
@@ -119,7 +119,7 @@ CUSTOM_FLOW_DATA = {
     },
     "LeftEar": {
         "active": true,
-        "stiffness": 0.35,
+        "stiffness": 0.65,
         "radius": 0.04,
         "gravity": 0.001,
         "damping": 0.75,
@@ -128,7 +128,7 @@ CUSTOM_FLOW_DATA = {
     },
     "LeftEar2_end": {
         "active": true,
-        "stiffness": 0.35,
+        "stiffness": 0.65,
         "radius": 0.04,
         "gravity": 0.001,
         "damping": 0.75,
