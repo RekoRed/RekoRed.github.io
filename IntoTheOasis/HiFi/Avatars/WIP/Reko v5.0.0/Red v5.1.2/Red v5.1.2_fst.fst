@@ -1,7 +1,7 @@
 name = Red v5.1.0
 scale = 1
-filename = Red v5.1.0.fbx
-script = flow.js
+filename = Red v5.1.2_fbx.fbx
+script = Red v5.1.2_flow.js
 marketplaceID = {90b12616-ce1f-4de8-8f79-4fb0e53b1aee}
 texdir = textures
 joint = jointRightHand = RightHand
