@@ -18,6 +18,7 @@
 		from { background-position: 0 0; }	to { background-position: 0 0; }}
 	h1{font-family: 'Teko', sans-serif;font-size:35px;line-height: 0px;}
 	h2{font-family: 'Teko', sans-serif;line-height: 0px;}
+	h3{font-family: 'Teko', sans-serif;line-height: 10px;}
 	p{font-family: 'Russo One', sans-serif;
 		padding-bottom: 30px;
 		padding-top: 30px;
@@ -25,6 +26,37 @@
 		padding-right: 30px;}
 	small{font-size:70%;}
 	/* NAVBAR => */
+	.tooltip {position: relative;display: inline-block;}
+	.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+	
 	div.SocialTable {display: flex;}
 	nav {font-family: 'Fredoka One', cursive;
 		float: left;
@@ -56,6 +88,19 @@
 		-moz-transition-duration: 0.2s;	transition-duration: 0.2s;}
 	button-navbar:hover{background-color: #860000;box-shadow: inset 0px 0px 15px #FF0000;}
 	button-navbar:active{background-color: #260000;box-shadow: inset 0px 0px 15px #830000;}
+	/* CON TABLE => */
+	contable-navbar{font-family: 'Russo One', sans-serif;font-weight: normal;
+		display: block; background-color: #5E0000; color: #fff;
+		padding-top:5px;  padding-bottom:5px;border: none;
+		box-shadow: inset 0px 0px 5px #D92525;border-radius: 4px;}
+	contable-navbar-att{font-family: 'Russo One', sans-serif;font-weight: normal;
+		display: block; background-color: rgba(0,255,21,0.65);; color: #000;
+		padding-top:5px;  padding-bottom:5px;border: none;
+		box-shadow: inset 0px 0px 5px #FFFFFF;border-radius: 4px;}
+	contable-navbar-think{font-family: 'Russo One', sans-serif;font-weight: normal;
+		display: block; background-color: rgba(229,255,0,0.65); color: #000;
+		padding-top:5px;  padding-bottom:5px;border: none;
+		box-shadow: inset 0px 0px 5px #FFFFFF;border-radius: 4px;}
 	/* <= SOCIALS */
 	/* <= NAVBAR */	
 	/* <= GLOBAL */
@@ -93,7 +138,7 @@ background-position-x: 0%;  background-position-y: 0%;  background-size: auto;  
 background-position: center;*/" src="https://i.imgur.com/wEmHcXJ.png"><br><br>
 		<img style="width:auto;height:62px;-webkit-filter: brightness(0.9) contrast(3) hue-rotate(180deg) saturate(4);" src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/emojione/178/wolf-face_1f43a.png">
 	
-<h1 style="color:#fff;line-height: 38px">20 Canis lupus PC Gamer<br>Jack of trades, master at none<br>Welcome to my website!</h1>
+<h1 style="color:#fff;line-height: 38px">21 Canis lupus PC Gamer<br>Jack of trades, master at none<br>Welcome to my website!</h1>
 	
 	</center>
 	
