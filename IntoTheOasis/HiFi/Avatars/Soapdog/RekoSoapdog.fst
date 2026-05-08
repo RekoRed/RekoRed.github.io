@@ -3,7 +3,6 @@ name     = Reko Soapdog
 type     = body+head
 scale    = 1
 filename = RekoSoapdog.fbx
-texdir = textures
 bs = JawOpen = jawOpen = 1
 bs = EyeBlink_R = HappyBlink.R = 1
 bs = EyeBlink_L = HappyBlink.L = 1
