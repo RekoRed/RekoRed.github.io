@@ -2,7 +2,7 @@ exporterVersion = 0.7.0
 name     = Reko Soapdog
 type     = body+head
 scale    = 1
-filename = RekoSoapdog.glb
+filename = RekoSoapdog.fbx
 texdir = textures
 bs = JawOpen = jawOpen = 1
 bs = EyeBlink_R = HappyBlink.R = 1
