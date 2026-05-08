@@ -72,7 +72,7 @@ jointMap = flow_Tail_0 = Tail1
 jointMap = flow_Tail_1 = Tail2
 jointMap = flow_Tail_2 = Tail3
 jointMap = flow_Tail_3 = Tail4
-jointRotationOffset2 = SoapDog_VTuber(Clone) = (0, 0, 0, -1)
+jointRotationOffset2 = RekoSoapdog = (0, 0, 0, -1)
 jointRotationOffset2 = Armature = (-0.7071068, 0, 0, -0.7071067)
 jointRotationOffset2 = Hips = (3.037846E-10, -3.816114E-08, 5.112975E-06, -0.9999999)
 jointRotationOffset2 = Spine = (0.07143191, 1.031398E-07, -2.777386E-06, -0.9974455)
