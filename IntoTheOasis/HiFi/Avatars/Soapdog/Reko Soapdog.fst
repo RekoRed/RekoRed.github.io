@@ -2,7 +2,7 @@ exporterVersion = 0.7.0
 name     = Reko Soapdog
 type     = body+head
 scale    = 1
-filename = SoapDog_Overte2.glb
+filename = SoapDog_Overte.glb
 bs = JawOpen = jawOpen = 1
 bs = EyeBlink_R = HappyBlink.R = 1
 bs = EyeBlink_L = HappyBlink.L = 1
