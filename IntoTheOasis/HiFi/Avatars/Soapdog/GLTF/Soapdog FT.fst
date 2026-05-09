@@ -177,3 +177,18 @@ jointRotationOffset2 = UpperLeg.R = (0.002298263, 0.9995387, 0.0302787, 0.000298
 jointRotationOffset2 = LowerLeg.R = (-0.002080096, 0.9993908, -0.03405252, 0.00736669)
 jointRotationOffset2 = foot.R = (0.014827, 0.9682618, 0.2494959, 0.001041413)
 
+
+flowPhysicsData = {"CheekL":{"active":false,"damping":0.85,"delta":0.55,"gravity":0,"inertia":0.8,"radius":0.01,"stiffness":0.9}}
+flowPhysicsData = {"CheekR":{"active":false,"damping":0.85,"delta":0.55,"gravity":0,"inertia":0.8,"radius":0.01,"stiffness":0}}
+flowPhysicsData = {"EarL":{"active":false,"damping":0.65,"delta":0.55,"gravity":0.005,"inertia":0.8,"radius":0.07,"stiffness":0.3}}
+flowPhysicsData = {"EarR":{"active":false,"damping":0.85,"delta":0.55,"gravity":-0.0096,"inertia":0.8,"radius":0.01,"stiffness":0}}
+flowPhysicsData = {"HairFront1":{"active":true,"damping":0.4,"delta":0.5,"gravity":-0.002,"inertia":0.8,"radius":0.04,"stiffness":0.7}}
+flowPhysicsData = {"HairFront2":{"active":true,"damping":0.4,"delta":0.5,"gravity":-0.002,"inertia":0.8,"radius":0.03,"stiffness":0.7}}
+flowPhysicsData = {"HairTop1":{"active":true,"damping":0.4,"delta":0.75,"gravity":-0.003,"inertia":0.8,"radius":0.03,"stiffness":0.6}}
+flowPhysicsData = {"HairTop2":{"active":true,"damping":0.4,"delta":0.5,"gravity":-0.003,"inertia":0.8,"radius":0.03,"stiffness":0.6}}
+flowPhysicsData = {"PhysHeadMinor":{"active":false,"damping":0.85,"delta":0.55,"gravity":0.041,"inertia":0,"radius":0.06,"stiffness":0.3}}
+flowPhysicsData = {"Tail":{"active":true,"damping":0.7,"delta":0.7,"gravity":-0.005,"inertia":0.4,"radius":0.1,"stiffness":0.35}}
+flowPhysicsData = {"Tongue":{"active":false,"damping":0.8,"delta":0.35,"gravity":0.0096,"inertia":0.7,"radius":0.03,"stiffness":0.55}}
+flowCollisionsData = {"LeftArm":{"offset":{"x":0,"y":0,"z":0},"radius":0.11,"type":"sphere"}}
+flowCollisionsData = {"RightArm":{"offset":{"x":0,"y":0.0182,"z":0},"radius":0.11,"type":"sphere"}}
+flowCollisionsData = {"Spine2":{"offset":{"x":0,"y":0.1821,"z":0},"radius":0.2,"type":"sphere"}}
