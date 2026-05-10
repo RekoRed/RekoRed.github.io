@@ -1,0 +1,13 @@
+{
+  "materialVersion": 1,
+  "materials": [
+    {
+      "name": "Rock061",
+      "model": "hifi_pbr",
+      "albedo": [1, 1, 1],
+      "albedoMap": "Alb.jpg",
+      "roughnessMap": "R.jpg",
+      "normalMap": "N.jpg"
+    }
+  ]
+}
