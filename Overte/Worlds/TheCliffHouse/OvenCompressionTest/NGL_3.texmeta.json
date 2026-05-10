@@ -1,0 +1,9 @@
+{
+    "compressed": {
+        "COMPRESSED_RG11_EAC": "NGL_3_COMPRESSED_RG11_EAC.ktx",
+        "COMPRESSED_RG_RGTC2": "NGL_3_COMPRESSED_RG_RGTC2.ktx"
+    },
+    "original": "NGL_3.png",
+    "uncompressed": "",
+    "version": 1
+}
