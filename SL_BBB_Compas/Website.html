@@ -3,47 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Grid-Hunter Master Map</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        body { background: #0b0e14; color: #fff; margin: 0; }
-        #map { height: 100vh; width: 100vw; }
-        .popup-box { background: #1a1a2e; padding: 10px; border-radius: 8px; }
-        .tp-link { display: block; background: #e94560; color: white; padding: 10px; text-decoration: none; text-align: center; border-radius: 5px; margin-top: 5px; }
+        body { margin: 0; background: #0b0e14; display: flex; flex-direction: column; height: 100vh; }
+        #map-frame { flex-grow: 1; border: none; width: 100%; }
+        .ui-overlay { background: #1a1a2e; padding: 15px; color: white; text-align: center; }
     </style>
 </head>
 <body>
-
-    <div id="map"></div>
-
-    <script>
-        // 1. Initialize Map
-        var map = L.map('map', { crs: L.CRS.Simple }).setView([1000, 1000], 2);
-
-        // 2. The "No-Block" Tile Strategy
-        // We use the 'MapQuest' or similar tile-friendly mirrors if available, 
-        // but for SL, we use the raw image source inside a simple Canvas layer
-        L.tileLayer('https://secondlife-maps-cdn.akamaized.net/map-1-{z}-{x}-{y}-objects.jpg', {
-            // We set the crossOrigin to 'anonymous' and ensure we are on a Local Server
-            crossOrigin: 'anonymous',
-            attribution: 'Second Life Map',
-            minZoom: 1, maxZoom: 6
-        }).addTo(map);
-
-        // 3. Your Interactive Markers
-        var regions = [
-            { name: "Bruissac", x: 1027, y: 1019, kiosks: 3 }
-        ];
-
-        regions.forEach(region => {
-            L.circle([region.y, region.x], { color: 'red', radius: 20 })
-             .addTo(map)
-             .bindPopup(`<div class="popup-box">
-                            <b>${region.name}</b><br>
-                            Kiosks: ${region.kiosks}<br>
-                            <a class="tp-link" href="secondlife://${region.name}/128/128/22">TELEPORT</a>
-                         </div>`);
-        });
-    </script>
+    <div class="ui-overlay">
+        <h1>🗺️ Grid-Hunter Target Matrix</h1>
+        <p>Interactive Map Active (Official SL Feed)</p>
+    </div>
+    
+    <iframe id="map-frame" 
+            src="https://map.secondlife.com/" 
+            allow="scripts; fullscreen"
+            sandbox="allow-scripts allow-same-origin allow-forms">
+    </iframe>
 </body>
 </html>
