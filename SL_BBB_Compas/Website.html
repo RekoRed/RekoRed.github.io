@@ -2,38 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Grid-Hunter Dashboard</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <title>Grid-Hunter Matrix</title>
     <style>
-        body { margin: 0; display: flex; height: 100vh; background: #0b0e14; font-family: sans-serif; }
-        #sidebar { width: 320px; background: #161625; padding: 20px; color: white; border-right: 2px solid #e94560; }
-        #map { flex-grow: 1; background: #000; }
-        .btn { display: block; background: #e94560; color: white; padding: 12px; margin: 10px 0; border-radius: 5px; text-align: center; text-decoration: none; font-weight: bold; }
+        body { margin: 0; padding: 0; height: 100vh; overflow: hidden; background: #000; }
+        iframe { width: 100%; height: 100%; border: none; }
     </style>
 </head>
 <body>
-    <div id="sidebar">
-        <h1>Grid-Hunter</h1>
-        <p>Targeting: <b id="region-name">Bruissac</b></p>
-        <a class="btn" href="secondlife:///app/teleport/Bruissac/128/128/22">TP to Region</a>
-    </div>
-
-    <div id="map"></div>
-
-    <script>
-        // 1. Setup a flat map with NO tile fetching (No CORS errors)
-        var map = L.map('map', { crs: L.CRS.Simple, minZoom: -2 });
-        var bounds = [[0,0], [1000,1000]];
-        map.fitBounds(bounds);
-
-        // 2. Load the map image via a direct URL that doesn't trigger CORS
-        // This is a single, static image. Browsers allow this everywhere.
-        var mapImageUrl = 'https://maps.secondlife.com/map-1-1027-1019-objects.jpg';
-        L.imageOverlay(mapImageUrl, bounds).addTo(map);
-
-        // 3. You can now add markers anywhere you want on top of that image!
-        L.circle([500, 500], {color: '#00f5ff', radius: 30}).addTo(map).bindPopup("Kiosk Location");
-    </script>
+    <iframe src="https://map.secondlife.com/" 
+            allow="scripts; fullscreen; geolocation"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-top-navigation">
+    </iframe>
 </body>
 </html>
