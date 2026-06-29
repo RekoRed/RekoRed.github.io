@@ -1,12 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
+    <style>
+        .card { border: 1px solid #333; padding: 10px; margin: 10px; border-radius: 8px; width: 300px; display: inline-block; vertical-align: top; }
+        img { width: 100%; border-radius: 4px; }
+    </style>
 </head>
 <body>
-<div class="target-card">
-    <h3>Bruissac</h3>
-    <img src="https://picture-service.secondlife.com/c776bb3d-6a70-011f-3345-7d32336e6352/320x240.png" alt="Target Location">
-    <a href="secondlife:///app/teleport/Bruissac/128/128/22">TP Now</a>
-</div>
+    <div id="stamp-container"></div>
+
+    <script>
+        // We use a proxy to fetch the HTML so you don't get blocked
+        const url = 'https://cors-anywhere.herokuapp.com/https://web.archive.org/web/20251008165649/http://thebbbbug.com/UTILS/Stamps.php';
+        
+        fetch(url)
+            .then(res => res.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const rows = doc.querySelectorAll('tbody tr');
+                const container = document.getElementById('stamp-container');
+
+                rows.forEach(row => {
+                    const imgUrl = row.querySelector('td img').src;
+                    // Extract UUID from the URL: split by '/' and find the one that looks like a UUID
+                    const uuid = imgUrl.split('/')[4]; 
+                    const name = row.querySelector('a').innerText;
+                    const slurl = row.querySelector('a').href;
+
+                    container.innerHTML += `
+                        <div class="card">
+                            <h3>${name}</h3>
+                            <img src="https://picture-service.secondlife.com/${uuid}/320x240.png">
+                            <a href="${slurl}">Teleport</a>
+                        </div>
+                    `;
+                });
+            });
+    </script>
 </body>
 </html>
