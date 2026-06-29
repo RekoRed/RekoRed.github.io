@@ -1,22 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <style>body, #map { height: 100vh; margin: 0; }</style>
 </head>
 <body>
-    <div id="map"></div>
-    <script>
-        var map = L.map('map', { crs: L.CRS.Simple }).setView([128, 128], 1);
-
-        // The 'cors-anywhere' proxy strips the security headers that cause your errors
-        var proxy = "https://cors-anywhere.herokuapp.com/";
-        var slTileUrl = "https://secondlife-maps-cdn.akamaized.net/map-1-{z}-{x}-{y}-objects.jpg";
-
-        L.tileLayer(proxy + slTileUrl, {
-            attribution: 'Second Life Map Data'
-        }).addTo(map);
-    </script>
+<div class="target-card">
+    <h3>Bruissac</h3>
+    <img src="https://picture-service.secondlife.com/c776bb3d-6a70-011f-3345-7d32336e6352/320x240.png" alt="Target Location">
+    <a href="secondlife:///app/teleport/Bruissac/128/128/22">TP Now</a>
+</div>
 </body>
 </html>
