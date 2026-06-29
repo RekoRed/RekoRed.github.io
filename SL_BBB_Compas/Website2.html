@@ -1,22 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <style>
-        body, #map { height: 100vh; margin: 0; }
-    </style>
+    <style>body, #map { height: 100vh; margin: 0; }</style>
 </head>
 <body>
     <div id="map"></div>
     <script>
-        var map = L.map('map').setView([1000, 1000], 2);
+        var map = L.map('map', { crs: L.CRS.Simple }).setView([128, 128], 1);
 
-        // This is a community-maintained tile server 
-        // It does NOT have the same security blocks as Linden Lab's CDN
-        L.tileLayer('https://map.osgrid.org/map/{z}/{x}/{y}.png', {
-            attribution: 'Grid Map',
-            maxZoom: 10
+        // The 'cors-anywhere' proxy strips the security headers that cause your errors
+        var proxy = "https://cors-anywhere.herokuapp.com/";
+        var slTileUrl = "https://secondlife-maps-cdn.akamaized.net/map-1-{z}-{x}-{y}-objects.jpg";
+
+        L.tileLayer(proxy + slTileUrl, {
+            attribution: 'Second Life Map Data'
         }).addTo(map);
     </script>
 </body>
