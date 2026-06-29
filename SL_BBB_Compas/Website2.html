@@ -1,8 +1,24 @@
-<!-- Use this exact structure. Do not nest it. -->
 <!DOCTYPE html>
-<html>
-<head><style>body { margin:0; } iframe { width:100vw; height:100vh; border:none; }</style></head>
+<html lang="en">
+<head>
+    <title>Grid-Hunter Command</title>
+    <style>
+        body { background: #1a1a2e; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; }
+        .map-wrapper { width: 90%; max-width: 800px; height: 60vh; border: 4px solid #e94560; border-radius: 10px; overflow: hidden; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .controls { margin-top: 20px; }
+        .btn { background: #e94560; padding: 15px 30px; border-radius: 5px; color: white; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
 <body>
-    <iframe src="https://map.secondlife.com/"></iframe>
+    <h1>Grid-Hunter Target Matrix</h1>
+
+    <div class="map-wrapper">
+        <iframe src="https://map.secondlife.com/" allow="scripts; fullscreen"></iframe>
+    </div>
+
+    <div class="controls">
+        <a class="btn" href="secondlife:///app/teleport/Bruissac/128/128/22">⚡ TELEPORT TO TARGET</a>
+    </div>
 </body>
 </html>
