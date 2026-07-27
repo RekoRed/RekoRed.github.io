@@ -16,6 +16,7 @@
         .meters { display: flex; justify-content: space-between; margin-top: 15px; }
         .bar-container { width: 30%; background: #333; height: 100px; display: flex; align-items: flex-end; border-radius: 4px; overflow: hidden; }
         .bar { width: 100%; background: #007acc; height: 0%; transition: height 0.05s linear; }
+        .warning { font-size: 12px; color: #f0ad4e; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -24,6 +25,7 @@
     <div class="box">
         <label>Second Life Object URL (http://...):</label>
         <input type="text" id="slUrl" placeholder="http://simXXX.agni.lindenlab.com:12345/cap/...">
+        <div class="warning">Note: If using Firefox, disable "HTTPS-Only Mode" for GitHub Pages, or run this HTML file locally via file:// to bypass browser interception.</div>
 
         <label>Audio Stream URL:</label>
         <input type="text" id="streamUrl" placeholder="https://yourstream.com/stream">
@@ -71,12 +73,6 @@
             if(!slUrl || !rawUrl) {
                 alert("Fill out both fields!");
                 return;
-            }
-
-            // Force ensure SL URL starts with http:// and strip accidental https attempts
-            if (slUrl.startsWith("https://")) {
-                slUrl = slUrl.replace("https://", "http://");
-                slUrlInput.value = slUrl;
             }
 
             localStorage.setItem('sl_url', slUrl);
@@ -160,13 +156,17 @@
 
             let payload = `${b},${m},${h}`;
 
-            // Explicitly prevent upgrade-to-secure on mixed-content fetch by ensuring proper formatting
-            fetch(slUrl, {
-                method: 'POST',
-                body: payload,
-                mode: 'no-cors',
-                cache: 'no-store'
-            }).catch(err => console.log("SL post error:", err));
+            // Using navigator.sendBeacon where available, or fallback to fetch with explicit target handling
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(slUrl, payload);
+            } else {
+                fetch(slUrl, {
+                    method: 'POST',
+                    body: payload,
+                    mode: 'no-cors',
+                    credentials: 'omit'
+                }).catch(err => console.log("SL post error:", err));
+            }
         }
     </script>
 </body>
