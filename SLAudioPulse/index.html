@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SL AudioLink Bridge</title>
+</head>
+<body>
+    <h1>SL AudioLink Node</h1>
+    <button id="playBtn">Connect & Start Stream</button>
+    <p id="status">Status: Disconnected</p>
+
+    <script>
+        // PASTE YOUR SECOND LIFE OBJECT URL HERE:
+        const SL_URL = "YOUR_SECOND_LIFE_URL_HERE";
+        
+        // PASTE YOUR STREAM URL HERE (Must support CORS or be direct audio/m3u):
+        const STREAM_URL = "YOUR_STREAM_URL_HERE";
+
+        const playBtn = document.getElementById('playBtn');
+        const statusEl = document.getElementById('status');
+
+        playBtn.addEventListener('click', async () => {
+            playBtn.style.display = 'none';
+            statusEl.innerText = "Status: Connecting to audio stream...";
+
+            const audio = new Audio();
+            audio.crossOrigin = "anonymous";
+            audio.src = STREAM_URL;
+            await audio.play();
+
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const source = audioCtx.createMediaElementSource(audio);
+            const analyzer = audioCtx.createAnalyser();
+            
+            analyzer.fftSize = 256;
+            source.connect(analyzer);
+            analyzer.connect(audioCtx.destination);
+
+            statusEl.innerText = "Status: Connected & Analyzing Beats!";
+
+            const dataArray = new Uint8Array(analyzer.frequencyBinCount);
+            let lastBeatTime = 0;
+
+            function detectBeat() {
+                requestAnimationFrame(detectBeat);
+                analyzer.getByteFrequencyData(dataArray);
+
+                // Focus on low frequencies (bass) for the first few bins
+                let sum = 0;
+                for (let i = 0; i < 10; i++) {
+                    sum += dataArray[i];
+                }
+                let averageBass = sum / 10;
+
+                // Simple threshold trigger with a cooldown to prevent spamming SL
+                let now = Date.now();
+                if (averageBass > 160 && (now - lastBeatTime) > 200) {
+                    lastBeatTime = now;
+                    triggerSecondLife();
+                }
+            }
+
+            detectBeat();
+        });
+
+        function triggerSecondLife() {
+            if (SL_URL.includes("YOUR_SECOND_LIFE_URL_HERE")) return;
+            
+            fetch(SL_URL, {
+                method: 'POST',
+                body: 'beat',
+                mode: 'no-cors' // Bypasses browser CORS blocks when pinging SL URLs
+            }).catch(err => console.log("SL Ping error:", err));
+        }
+    </script>
+</body>
+</html>
