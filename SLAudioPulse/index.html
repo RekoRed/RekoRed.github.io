@@ -31,9 +31,9 @@
 
     <p id="status">Status: Enter URLs above</p>
     
-    <audio id="audioElement" crossorigin="anonymous"></audio>
+    <audio id="audioElement" crossorigin="anonymous" controls style="width:100%; margin-bottom:15px; display:none;"></audio>
     
-    <button id="startBtn">Play & Broadcast to SL</button>
+    <button id="startBtn">Connect & Start Analyzing</button>
 
     <div class="meters">
         <div style="text-align:center; width:30%;">Bass<div class="bar-container"><div id="bassBar" class="bar"></div></div></div>
@@ -71,45 +71,43 @@
             localStorage.setItem('sl_url', slUrlInput.value);
             localStorage.setItem('stream_url', rawUrl);
             
-            // If the user inputs an insecure HTTP stream on an HTTPS page, 
-            // route it through a secure proxy wrapper to prevent mixed-content blocks.
-            if (rawUrl.startsWith("http://")) {
-                audioElement.src = "https://corsproxy.io/?" + encodeURIComponent(rawUrl);
-                statusEl.innerText = "Status: HTTP stream detected (Proxied). Click Play.";
-            } else {
-                audioElement.src = rawUrl;
-                statusEl.innerText = "Status: HTTPS stream loaded. Click Play.";
-            }
-
+            // Un-proxied native assignment (supports direct links or custom endpoints safely)
+            audioElement.src = rawUrl;
+            audioElement.load();
+            
+            audioElement.style.display = 'block';
             startBtn.style.display = 'block';
+            statusEl.innerText = "Status: Stream loaded. Use controls or hit start.";
         });
 
         startBtn.addEventListener('click', async () => {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const source = audioCtx.createMediaElementSource(audioElement);
-                analyzer = audioCtx.createAnalyser();
-                analyzer.fftSize = 64;
-                
-                source.connect(analyzer);
-                analyzer.connect(audioCtx.destination);
-            }
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    const source = audioCtx.createMediaElementSource(audioElement);
+                    analyzer = audioCtx.createAnalyser();
+                    analyzer.fftSize = 64;
+                    
+                    source.connect(analyzer);
+                    analyzer.connect(audioCtx.destination);
+                }
 
-            if (audioCtx.state === 'suspended') {
-                await audioCtx.resume();
-            }
+                if (audioCtx.state === 'suspended') {
+                    await audioCtx.resume();
+                }
 
-            audioElement.play().then(() => {
-                statusEl.innerText = "Status: Live! Broadcasting to SL.";
+                await audioElement.play();
+                statusEl.innerText = "Status: Live! Broadcasting frequency data to SL.";
                 startBtn.style.display = 'none';
+
                 if (!isRunning) {
                     isRunning = true;
                     analyzeLoop();
                 }
-            }).catch(e => {
-                statusEl.innerText = "Playback error: Stream link blocked or invalid.";
-                console.error(e);
-            });
+            } catch (err) {
+                statusEl.innerText = "Error: Check browser console or stream format compatibility.";
+                console.error(err);
+            }
         });
 
         function analyzeLoop() {
