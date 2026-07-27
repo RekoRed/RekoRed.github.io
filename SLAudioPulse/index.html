@@ -10,6 +10,8 @@
         button:hover { background: #005999; }
         #startBtn { background: #28a745; display: none; margin-top: 10px; }
         #startBtn:hover { background: #218838; }
+        #muteBtn { display: none; background: #d9534f; margin-top: 10px; }
+        #muteBtn:hover { background: #c9302c; }
         .box { background: #1e1e1e; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
         .meters { display: flex; justify-content: space-between; margin-top: 15px; }
         .bar-container { width: 30%; background: #333; height: 100px; display: flex; align-items: flex-end; border-radius: 4px; overflow: hidden; }
@@ -23,17 +25,18 @@
         <label>Second Life Object URL:</label>
         <input type="text" id="slUrl" placeholder="https://simXXX.agni.lindenlab.com/...">
 
-        <label>Audio Stream URL (HTTP or HTTPS):</label>
-        <input type="text" id="streamUrl" placeholder="http:// or https://yourstream.com:8000/stream">
+        <label>Audio Stream URL:</label>
+        <input type="text" id="streamUrl" placeholder="https://yourstream.com/stream">
 
         <button id="configBtn">Save & Load Stream</button>
     </div>
 
     <p id="status">Status: Enter URLs above</p>
     
-    <audio id="audioElement" crossorigin="anonymous" controls style="width:100%; margin-bottom:15px; display:none;"></audio>
+    <audio id="audioElement" crossorigin="anonymous" style="display:none;"></audio>
     
     <button id="startBtn">Connect & Start Analyzing</button>
+    <button id="muteBtn">Mute Speakers (Keep SL Active)</button>
 
     <div class="meters">
         <div style="text-align:center; width:30%;">Bass<div class="bar-container"><div id="bassBar" class="bar"></div></div></div>
@@ -46,6 +49,7 @@
         const streamUrlInput = document.getElementById('streamUrl');
         const configBtn = document.getElementById('configBtn');
         const startBtn = document.getElementById('startBtn');
+        const muteBtn = document.getElementById('muteBtn');
         const statusEl = document.getElementById('status');
         const audioElement = document.getElementById('audioElement');
 
@@ -53,7 +57,7 @@
         const midBar = document.getElementById('midBar');
         const highBar = document.getElementById('highBar');
 
-        let audioCtx, analyzer, isRunning = false;
+        let audioCtx, analyzer, masterGain, isRunning = false, isMuted = false;
         let lastSendTime = 0;
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -71,13 +75,11 @@
             localStorage.setItem('sl_url', slUrlInput.value);
             localStorage.setItem('stream_url', rawUrl);
             
-            // Un-proxied native assignment (supports direct links or custom endpoints safely)
             audioElement.src = rawUrl;
             audioElement.load();
             
-            audioElement.style.display = 'block';
             startBtn.style.display = 'block';
-            statusEl.innerText = "Status: Stream loaded. Use controls or hit start.";
+            statusEl.innerText = "Status: Stream loaded. Click Connect.";
         });
 
         startBtn.addEventListener('click', async () => {
@@ -85,11 +87,15 @@
                 if (!audioCtx) {
                     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                     const source = audioCtx.createMediaElementSource(audioElement);
+                    
                     analyzer = audioCtx.createAnalyser();
                     analyzer.fftSize = 64;
                     
+                    masterGain = audioCtx.createGain();
+                    
                     source.connect(analyzer);
-                    analyzer.connect(audioCtx.destination);
+                    analyzer.connect(masterGain);
+                    masterGain.connect(audioCtx.destination);
                 }
 
                 if (audioCtx.state === 'suspended') {
@@ -99,6 +105,7 @@
                 await audioElement.play();
                 statusEl.innerText = "Status: Live! Broadcasting frequency data to SL.";
                 startBtn.style.display = 'none';
+                muteBtn.style.display = 'block';
 
                 if (!isRunning) {
                     isRunning = true;
@@ -108,6 +115,14 @@
                 statusEl.innerText = "Error: Check browser console or stream format compatibility.";
                 console.error(err);
             }
+        });
+
+        muteBtn.addEventListener('click', () => {
+            if (!masterGain) return;
+            isMuted = !isMuted;
+            masterGain.gain.value = isMuted ? 0 : 1;
+            muteBtn.style.background = isMuted ? "#f0ad4e" : "#d9534f";
+            muteBtn.innerText = isMuted ? "Unmute Speakers" : "Mute Speakers (Keep SL Active)";
         });
 
         function analyzeLoop() {
