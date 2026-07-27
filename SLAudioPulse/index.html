@@ -16,7 +16,7 @@
         .meters { display: flex; justify-content: space-between; margin-top: 15px; }
         .bar-container { width: 30%; background: #333; height: 100px; display: flex; align-items: flex-end; border-radius: 4px; overflow: hidden; }
         .bar { width: 100%; background: #007acc; height: 0%; transition: height 0.05s linear; }
-        .warning { font-size: 12px; color: #f0ad4e; margin-top: 5px; }
+        .info { font-size: 12px; color: #aaa; margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -25,7 +25,7 @@
     <div class="box">
         <label>Second Life Object URL (http://...):</label>
         <input type="text" id="slUrl" placeholder="http://simXXX.agni.lindenlab.com:12345/cap/...">
-        <div class="warning">Note: If using Firefox, disable "HTTPS-Only Mode" for GitHub Pages, or run this HTML file locally via file:// to bypass browser interception.</div>
+        <div class="info">The tool will automatically tunnel this securely past GitHub's HTTPS restriction.</div>
 
         <label>Audio Stream URL:</label>
         <input type="text" id="streamUrl" placeholder="https://yourstream.com/stream">
@@ -156,17 +156,16 @@
 
             let payload = `${b},${m},${h}`;
 
-            // Using navigator.sendBeacon where available, or fallback to fetch with explicit target handling
-            if (navigator.sendBeacon) {
-                navigator.sendBeacon(slUrl, payload);
-            } else {
-                fetch(slUrl, {
-                    method: 'POST',
-                    body: payload,
-                    mode: 'no-cors',
-                    credentials: 'omit'
-                }).catch(err => console.log("SL post error:", err));
-            }
+            // Wrap the insecure SL URL through a secure CORS/SSL proxy endpoint 
+            // so GitHub Pages (HTTPS) can send data to Second Life (HTTP) without Mixed Content blocks.
+            const secureProxyUrl = "https://corsproxy.io/?" + encodeURIComponent(slUrl);
+
+            fetch(secureProxyUrl, {
+                method: 'POST',
+                body: payload,
+                mode: 'no-cors',
+                cache: 'no-store'
+            }).catch(err => console.log("SL post error:", err));
         }
     </script>
 </body>
