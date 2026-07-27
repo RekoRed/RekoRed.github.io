@@ -23,15 +23,14 @@
         <label>Second Life Object URL:</label>
         <input type="text" id="slUrl" placeholder="https://simXXX.agni.lindenlab.com/...">
 
-        <label>Audio Stream URL (Direct .pls/.mp3 link):</label>
-        <input type="text" id="streamUrl" placeholder="http://yourstream.com:8000/stream">
+        <label>Audio Stream URL (HTTP or HTTPS):</label>
+        <input type="text" id="streamUrl" placeholder="http:// or https://yourstream.com:8000/stream">
 
         <button id="configBtn">Save & Load Stream</button>
     </div>
 
     <p id="status">Status: Enter URLs above</p>
     
-    <!-- Hidden audio element that actually plays the stream -->
     <audio id="audioElement" crossorigin="anonymous"></audio>
     
     <button id="startBtn">Play & Broadcast to SL</button>
@@ -63,15 +62,25 @@
         });
 
         configBtn.addEventListener('click', () => {
-            if(!slUrlInput.value || !streamUrlInput.value) {
+            let rawUrl = streamUrlInput.value.trim();
+            if(!slUrlInput.value || !rawUrl) {
                 alert("Fill out both fields!");
                 return;
             }
+
             localStorage.setItem('sl_url', slUrlInput.value);
-            localStorage.setItem('stream_url', streamUrlInput.value);
+            localStorage.setItem('stream_url', rawUrl);
             
-            audioElement.src = streamUrlInput.value;
-            statusEl.innerText = "Status: Stream loaded. Click Play.";
+            // If the user inputs an insecure HTTP stream on an HTTPS page, 
+            // route it through a secure proxy wrapper to prevent mixed-content blocks.
+            if (rawUrl.startsWith("http://")) {
+                audioElement.src = "https://corsproxy.io/?" + encodeURIComponent(rawUrl);
+                statusEl.innerText = "Status: HTTP stream detected (Proxied). Click Play.";
+            } else {
+                audioElement.src = rawUrl;
+                statusEl.innerText = "Status: HTTPS stream loaded. Click Play.";
+            }
+
             startBtn.style.display = 'block';
         });
 
@@ -80,7 +89,7 @@
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const source = audioCtx.createMediaElementSource(audioElement);
                 analyzer = audioCtx.createAnalyser();
-                analyzer.fftSize = 64; // Smaller chunks for clean frequency groupings
+                analyzer.fftSize = 64;
                 
                 source.connect(analyzer);
                 analyzer.connect(audioCtx.destination);
@@ -98,7 +107,7 @@
                     analyzeLoop();
                 }
             }).catch(e => {
-                statusEl.innerText = "Playback error: Check stream link type.";
+                statusEl.innerText = "Playback error: Stream link blocked or invalid.";
                 console.error(e);
             });
         });
@@ -110,17 +119,14 @@
             const dataArray = new Uint8Array(analyzer.frequencyBinCount);
             analyzer.getByteFrequencyData(dataArray);
 
-            // Group frequencies into simple bands (Bass, Mids, Highs)
             let bass = dataArray[1] || 0;
             let mids = dataArray[5] || 0;
             let highs = dataArray.length > 15 ? dataArray[15] : 0;
 
-            // Visual feedback meters on the webpage
             bassBar.style.height = (bass / 255) * 100 + '%';
             midBar.style.height = (mids / 255) * 100 + '%';
             highBar.style.height = (highs / 255) * 100 + '%';
 
-            // Throttle data sent to SL to roughly 5 times per second to prevent HTTP queue lagging
             let now = Date.now();
             if (now - lastSendTime > 200) {
                 lastSendTime = now;
@@ -132,7 +138,6 @@
             const slUrl = slUrlInput.value;
             if (!slUrl) return;
 
-            // Format data as simple comma-separated values: "bass,mids,highs"
             let payload = `${b},${m},${h}`;
 
             fetch(slUrl, {
