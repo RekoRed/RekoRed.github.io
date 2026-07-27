@@ -3,73 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <title>SL AudioLink Bridge</title>
+    <style>
+        body { font-family: sans-serif; max-width: 500px; margin: 40px auto; padding: 20px; background: #121212; color: #fff; }
+        input { width: 100%; padding: 8px; margin: 5px 0 15px 0; background: #222; border: 1px solid #444; color: #fff; box-sizing: border-box; }
+        button { padding: 10px 20px; background: #007acc; color: white; border: none; cursor: pointer; font-size: 16px; width: 100%; }
+        button:hover { background: #005999; }
+        #playBtn { background: #28a745; margin-top: 10px; display: none; }
+        #playBtn:hover { background: #218838; }
+        .config-box { background: #1e1e1e; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
+    </style>
 </head>
 <body>
-    <h1>SL AudioLink Node</h1>
+    <h2>SL AudioLink Bridge</h2>
+    
+    <div class="config-box">
+        <label for="slUrlInput">Second Life Object URL:</label>
+        <input type="text" id="slUrlInput" placeholder="https://simXXX.agni.lindenlab.com:12046/...">
+
+        <label for="streamUrlInput">Audio Stream URL (Icecast/Shoutcast):</label>
+        <input type="text" id="streamUrlInput" placeholder="http://yourstream.com:8000/stream">
+
+        <button id="saveBtn">Save & Initialize</button>
+    </div>
+
+    <p id="status">Status: Waiting for configuration...</p>
     <button id="playBtn">Connect & Start Stream</button>
-    <p id="status">Status: Disconnected</p>
 
     <script>
-        // PASTE YOUR SECOND LIFE OBJECT URL HERE:
-        const SL_URL = "YOUR_SECOND_LIFE_URL_HERE";
-        
-        // PASTE YOUR STREAM URL HERE (Must support CORS or be direct audio/m3u):
-        const STREAM_URL = "YOUR_STREAM_URL_HERE";
-
+        const slUrlInput = document.getElementById('slUrlInput');
+        const streamUrlInput = document.getElementById('streamUrlInput');
+        const saveBtn = document.getElementById('saveBtn');
         const playBtn = document.getElementById('playBtn');
         const statusEl = document.getElementById('status');
 
-        playBtn.addEventListener('click', async () => {
-            playBtn.style.display = 'none';
-            statusEl.innerText = "Status: Connecting to audio stream...";
+        let SL_URL = "";
+        let STREAM_URL = "";
 
-            const audio = new Audio();
-            audio.crossOrigin = "anonymous";
-            audio.src = STREAM_URL;
-            await audio.play();
+        // Load saved URLs from previous session if they exist
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('sl_url')) {
+                slUrlInput.value = localStorage.getItem('sl_url');
+            }
+            if (localStorage.getItem('stream_url')) {
+                streamUrlInput.value = localStorage.getItem('stream_url');
+            }
+        });
 
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const source = audioCtx.createMediaElementSource(audio);
-            const analyzer = audioCtx.createAnalyser();
-            
-            analyzer.fftSize = 256;
-            source.connect(analyzer);
-            analyzer.connect(audioCtx.destination);
+        saveBtn.addEventListener('click', () => {
+            SL_URL = slUrlInput.value.trim();
+            STREAM_URL = streamUrlInput.value.trim();
 
-            statusEl.innerText = "Status: Connected & Analyzing Beats!";
-
-            const dataArray = new Uint8Array(analyzer.frequencyBinCount);
-            let lastBeatTime = 0;
-
-            function detectBeat() {
-                requestAnimationFrame(detectBeat);
-                analyzer.getByteFrequencyData(dataArray);
-
-                // Focus on low frequencies (bass) for the first few bins
-                let sum = 0;
-                for (let i = 0; i < 10; i++) {
-                    sum += dataArray[i];
-                }
-                let averageBass = sum / 10;
-
-                // Simple threshold trigger with a cooldown to prevent spamming SL
-                let now = Date.now();
-                if (averageBass > 160 && (now - lastBeatTime) > 200) {
-                    lastBeatTime = now;
-                    triggerSecondLife();
-                }
+            if (!SL_URL || !STREAM_URL) {
+                alert("Please fill in both fields!");
+                return;
             }
 
-            detectBeat();
+            // Save to browser storage
+            localStorage.setItem('sl_url', SL_URL);
+            localStorage.setItem('stream_url', STREAM_URL);
+
+            statusEl.innerText = "Status: Configured. Ready to connect!";
+            playBtn.style.display = 'block';
+        });
+
+        playBtn.addEventListener('click', async () => {
+            playBtn.style.display = 'none';
+            slUrlInput.disabled = true;
+            streamUrlInput.disabled = true;
+            saveBtn.disabled = true;
+            statusEl.innerText = "Status: Connecting to audio stream...";
+
+            try {
+                const audio = new Audio();
+                audio.crossOrigin = "anonymous";
+                audio.src = STREAM_URL;
+                await audio.play();
+
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioCtx.createMediaElementSource(audio);
+                const analyzer = audioCtx.createAnalyser();
+                
+                analyzer.fftSize = 256;
+                source.connect(analyzer);
+                analyzer.connect(audioCtx.destination);
+
+                statusEl.innerText = "Status: Connected & Analyzing Beats!";
+
+                const dataArray = new Uint8Array(analyzer.frequencyBinCount);
+                let lastBeatTime = 0;
+
+                function detectBeat() {
+                    requestAnimationFrame(detectBeat);
+                    analyzer.getByteFrequencyData(dataArray);
+
+                    // Focus on low frequencies (bass)
+                    let sum = 0;
+                    for (let i = 0; i < 10; i++) {
+                        sum += dataArray[i];
+                    }
+                    let averageBass = sum / 10;
+
+                    let now = Date.now();
+                    if (averageBass > 160 && (now - lastBeatTime) > 200) {
+                        lastBeatTime = now;
+                        triggerSecondLife();
+                    }
+                }
+
+                detectBeat();
+            } catch (err) {
+                statusEl.innerText = "Status: Error starting audio stream (Check CORS or URL).";
+                console.error(err);
+                playBtn.style.display = 'block';
+            }
         });
 
         function triggerSecondLife() {
-            if (SL_URL.includes("YOUR_SECOND_LIFE_URL_HERE")) return;
+            if (!SL_URL) return;
             
             fetch(SL_URL, {
                 method: 'POST',
                 body: 'beat',
-                mode: 'no-cors' // Bypasses browser CORS blocks when pinging SL URLs
+                mode: 'no-cors'
             }).catch(err => console.log("SL Ping error:", err));
         }
     </script>
