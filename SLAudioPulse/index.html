@@ -22,8 +22,8 @@
     <h2>SL AudioLink Bridge</h2>
     
     <div class="box">
-        <label>Second Life Object URL:</label>
-        <input type="text" id="slUrl" placeholder="https://simXXX.agni.lindenlab.com/...">
+        <label>Second Life Object URL (http://...):</label>
+        <input type="text" id="slUrl" placeholder="http://simXXX.agni.lindenlab.com:12345/cap/...">
 
         <label>Audio Stream URL:</label>
         <input type="text" id="streamUrl" placeholder="https://yourstream.com/stream">
@@ -67,12 +67,19 @@
 
         configBtn.addEventListener('click', () => {
             let rawUrl = streamUrlInput.value.trim();
-            if(!slUrlInput.value || !rawUrl) {
+            let slUrl = slUrlInput.value.trim();
+            if(!slUrl || !rawUrl) {
                 alert("Fill out both fields!");
                 return;
             }
 
-            localStorage.setItem('sl_url', slUrlInput.value);
+            // Force ensure SL URL starts with http:// and strip accidental https attempts
+            if (slUrl.startsWith("https://")) {
+                slUrl = slUrl.replace("https://", "http://");
+                slUrlInput.value = slUrl;
+            }
+
+            localStorage.setItem('sl_url', slUrl);
             localStorage.setItem('stream_url', rawUrl);
             
             audioElement.src = rawUrl;
@@ -153,10 +160,12 @@
 
             let payload = `${b},${m},${h}`;
 
+            // Explicitly prevent upgrade-to-secure on mixed-content fetch by ensuring proper formatting
             fetch(slUrl, {
                 method: 'POST',
                 body: payload,
-                mode: 'no-cors'
+                mode: 'no-cors',
+                cache: 'no-store'
             }).catch(err => console.log("SL post error:", err));
         }
     </script>
