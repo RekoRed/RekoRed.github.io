@@ -4,128 +4,142 @@
     <meta charset="UTF-8">
     <title>SL AudioLink Bridge</title>
     <style>
-        body { font-family: sans-serif; max-width: 500px; margin: 40px auto; padding: 20px; background: #121212; color: #fff; }
-        input { width: 100%; padding: 8px; margin: 5px 0 15px 0; background: #222; border: 1px solid #444; color: #fff; box-sizing: border-box; }
-        button { padding: 10px 20px; background: #007acc; color: white; border: none; cursor: pointer; font-size: 16px; width: 100%; }
+        body { font-family: sans-serif; max-width: 450px; margin: 50px auto; padding: 20px; background: #121212; color: #fff; }
+        input { width: 100%; padding: 10px; margin: 5px 0 15px 0; background: #222; border: 1px solid #444; color: #fff; box-sizing: border-box; }
+        button { padding: 12px; background: #007acc; color: white; border: none; cursor: pointer; font-size: 16px; width: 100%; border-radius: 4px; }
         button:hover { background: #005999; }
-        #playBtn { background: #28a745; margin-top: 10px; display: none; }
-        #playBtn:hover { background: #218838; }
-        .config-box { background: #1e1e1e; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
+        #startBtn { background: #28a745; display: none; margin-top: 10px; }
+        #startBtn:hover { background: #218838; }
+        .box { background: #1e1e1e; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+        .meters { display: flex; justify-content: space-between; margin-top: 15px; }
+        .bar-container { width: 30%; background: #333; height: 100px; display: flex; align-items: flex-end; border-radius: 4px; overflow: hidden; }
+        .bar { width: 100%; background: #007acc; height: 0%; transition: height 0.05s linear; }
     </style>
 </head>
 <body>
     <h2>SL AudioLink Bridge</h2>
     
-    <div class="config-box">
-        <label for="slUrlInput">Second Life Object URL:</label>
-        <input type="text" id="slUrlInput" placeholder="https://simXXX.agni.lindenlab.com:12046/...">
+    <div class="box">
+        <label>Second Life Object URL:</label>
+        <input type="text" id="slUrl" placeholder="https://simXXX.agni.lindenlab.com/...">
 
-        <label for="streamUrlInput">Audio Stream URL (Icecast/Shoutcast):</label>
-        <input type="text" id="streamUrlInput" placeholder="http://yourstream.com:8000/stream">
+        <label>Audio Stream URL (Direct .pls/.mp3 link):</label>
+        <input type="text" id="streamUrl" placeholder="http://yourstream.com:8000/stream">
 
-        <button id="saveBtn">Save & Initialize</button>
+        <button id="configBtn">Save & Load Stream</button>
     </div>
 
-    <p id="status">Status: Waiting for configuration...</p>
-    <button id="playBtn">Connect & Start Stream</button>
+    <p id="status">Status: Enter URLs above</p>
+    
+    <!-- Hidden audio element that actually plays the stream -->
+    <audio id="audioElement" crossorigin="anonymous"></audio>
+    
+    <button id="startBtn">Play & Broadcast to SL</button>
+
+    <div class="meters">
+        <div style="text-align:center; width:30%;">Bass<div class="bar-container"><div id="bassBar" class="bar"></div></div></div>
+        <div style="text-align:center; width:30%;">Mids<div class="bar-container"><div id="midBar" class="bar"></div></div></div>
+        <div style="text-align:center; width:30%;">Highs<div class="bar-container"><div id="highBar" class="bar"></div></div></div>
+    </div>
 
     <script>
-        const slUrlInput = document.getElementById('slUrlInput');
-        const streamUrlInput = document.getElementById('streamUrlInput');
-        const saveBtn = document.getElementById('saveBtn');
-        const playBtn = document.getElementById('playBtn');
+        const slUrlInput = document.getElementById('slUrl');
+        const streamUrlInput = document.getElementById('streamUrl');
+        const configBtn = document.getElementById('configBtn');
+        const startBtn = document.getElementById('startBtn');
         const statusEl = document.getElementById('status');
+        const audioElement = document.getElementById('audioElement');
 
-        let SL_URL = "";
-        let STREAM_URL = "";
+        const bassBar = document.getElementById('bassBar');
+        const midBar = document.getElementById('midBar');
+        const highBar = document.getElementById('highBar');
 
-        // Load saved URLs from previous session if they exist
+        let audioCtx, analyzer, isRunning = false;
+        let lastSendTime = 0;
+
         window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('sl_url')) {
-                slUrlInput.value = localStorage.getItem('sl_url');
-            }
-            if (localStorage.getItem('stream_url')) {
-                streamUrlInput.value = localStorage.getItem('stream_url');
-            }
+            if (localStorage.getItem('sl_url')) slUrlInput.value = localStorage.getItem('sl_url');
+            if (localStorage.getItem('stream_url')) streamUrlInput.value = localStorage.getItem('stream_url');
         });
 
-        saveBtn.addEventListener('click', () => {
-            SL_URL = slUrlInput.value.trim();
-            STREAM_URL = streamUrlInput.value.trim();
-
-            if (!SL_URL || !STREAM_URL) {
-                alert("Please fill in both fields!");
+        configBtn.addEventListener('click', () => {
+            if(!slUrlInput.value || !streamUrlInput.value) {
+                alert("Fill out both fields!");
                 return;
             }
-
-            // Save to browser storage
-            localStorage.setItem('sl_url', SL_URL);
-            localStorage.setItem('stream_url', STREAM_URL);
-
-            statusEl.innerText = "Status: Configured. Ready to connect!";
-            playBtn.style.display = 'block';
+            localStorage.setItem('sl_url', slUrlInput.value);
+            localStorage.setItem('stream_url', streamUrlInput.value);
+            
+            audioElement.src = streamUrlInput.value;
+            statusEl.innerText = "Status: Stream loaded. Click Play.";
+            startBtn.style.display = 'block';
         });
 
-        playBtn.addEventListener('click', async () => {
-            playBtn.style.display = 'none';
-            slUrlInput.disabled = true;
-            streamUrlInput.disabled = true;
-            saveBtn.disabled = true;
-            statusEl.innerText = "Status: Connecting to audio stream...";
-
-            try {
-                const audio = new Audio();
-                audio.crossOrigin = "anonymous";
-                audio.src = STREAM_URL;
-                await audio.play();
-
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const source = audioCtx.createMediaElementSource(audio);
-                const analyzer = audioCtx.createAnalyser();
+        startBtn.addEventListener('click', async () => {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioCtx.createMediaElementSource(audioElement);
+                analyzer = audioCtx.createAnalyser();
+                analyzer.fftSize = 64; // Smaller chunks for clean frequency groupings
                 
-                analyzer.fftSize = 256;
                 source.connect(analyzer);
                 analyzer.connect(audioCtx.destination);
-
-                statusEl.innerText = "Status: Connected & Analyzing Beats!";
-
-                const dataArray = new Uint8Array(analyzer.frequencyBinCount);
-                let lastBeatTime = 0;
-
-                function detectBeat() {
-                    requestAnimationFrame(detectBeat);
-                    analyzer.getByteFrequencyData(dataArray);
-
-                    // Focus on low frequencies (bass)
-                    let sum = 0;
-                    for (let i = 0; i < 10; i++) {
-                        sum += dataArray[i];
-                    }
-                    let averageBass = sum / 10;
-
-                    let now = Date.now();
-                    if (averageBass > 160 && (now - lastBeatTime) > 200) {
-                        lastBeatTime = now;
-                        triggerSecondLife();
-                    }
-                }
-
-                detectBeat();
-            } catch (err) {
-                statusEl.innerText = "Status: Error starting audio stream (Check CORS or URL).";
-                console.error(err);
-                playBtn.style.display = 'block';
             }
+
+            if (audioCtx.state === 'suspended') {
+                await audioCtx.resume();
+            }
+
+            audioElement.play().then(() => {
+                statusEl.innerText = "Status: Live! Broadcasting to SL.";
+                startBtn.style.display = 'none';
+                if (!isRunning) {
+                    isRunning = true;
+                    analyzeLoop();
+                }
+            }).catch(e => {
+                statusEl.innerText = "Playback error: Check stream link type.";
+                console.error(e);
+            });
         });
 
-        function triggerSecondLife() {
-            if (!SL_URL) return;
-            
-            fetch(SL_URL, {
+        function analyzeLoop() {
+            requestAnimationFrame(analyzeLoop);
+            if (!analyzer) return;
+
+            const dataArray = new Uint8Array(analyzer.frequencyBinCount);
+            analyzer.getByteFrequencyData(dataArray);
+
+            // Group frequencies into simple bands (Bass, Mids, Highs)
+            let bass = dataArray[1] || 0;
+            let mids = dataArray[5] || 0;
+            let highs = dataArray.length > 15 ? dataArray[15] : 0;
+
+            // Visual feedback meters on the webpage
+            bassBar.style.height = (bass / 255) * 100 + '%';
+            midBar.style.height = (mids / 255) * 100 + '%';
+            highBar.style.height = (highs / 255) * 100 + '%';
+
+            // Throttle data sent to SL to roughly 5 times per second to prevent HTTP queue lagging
+            let now = Date.now();
+            if (now - lastSendTime > 200) {
+                lastSendTime = now;
+                sendDataToSL(bass, mids, highs);
+            }
+        }
+
+        function sendDataToSL(b, m, h) {
+            const slUrl = slUrlInput.value;
+            if (!slUrl) return;
+
+            // Format data as simple comma-separated values: "bass,mids,highs"
+            let payload = `${b},${m},${h}`;
+
+            fetch(slUrl, {
                 method: 'POST',
-                body: 'beat',
+                body: payload,
                 mode: 'no-cors'
-            }).catch(err => console.log("SL Ping error:", err));
+            }).catch(err => console.log("SL post error:", err));
         }
     </script>
 </body>
