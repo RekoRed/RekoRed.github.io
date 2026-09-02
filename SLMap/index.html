@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Second Life Map Viewer - Modular</title>
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- PapaParse for local CSV processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <!-- App Styles -->
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+    <div class="sidebar">
+        <h3>Map Controls</h3>
+        <div class="control-group">
+            <label><input type="checkbox" id="toggleGrid" checked> Region Grid</label>
+        </div>
+        <div class="control-group">
+            <label><input type="checkbox" id="toggleRegions" checked> Region Games</label>
+        </div>
+        <div class="control-group visualization-control">
+            <label for="visualizationSelect">Color tiles by</label>
+            <select id="visualizationSelect">
+                <option value="none">No visualization</option>
+                <option value="region_rating">Sim Rating</option>
+                <option value="agent_limit">Player Limit</option>
+                <option value="agent_reserved">Premium Priority Slots</option>
+                <option value="normal_player_balance">Normal Player Balance</option>
+                <option value="region_product_name">Region Type</option>
+                <option value="region_max_prims">Max Prims</option>
+                <option value="sim_channel">Server Type</option>
+                <option value="server_normal_rc">Server Normal VS RC</option>
+            </select>
+            <div id="visualizationLegend" class="visualization-legend" hidden></div>
+        </div>
+        <div class="instruction">
+            Hover a tile to highlight it. Double-click to view telemetry or query live state.
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <!-- Application Scripts -->
+    <script src="region-data.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
