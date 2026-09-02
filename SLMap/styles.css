@@ -1,0 +1,86 @@
+html, body, #map {
+    height: 100%;
+    margin: 0;
+    background-color: #1a1a1a;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: rgba(20, 20, 20, 0.85);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    width: 240px;
+}
+
+.sidebar h3 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #00ffcc;
+}
+
+.control-group {
+    margin-bottom: 10px;
+}
+
+.control-group label {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.control-group input[type="checkbox"] {
+    margin-right: 8px;
+    accent-color: #00ffcc;
+}
+
+.instruction {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 8px;
+}
+
+.popup-meta {
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.popup-meta hr {
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 6px 0;
+}
+
+.region-tile-label {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.region-tile-label span {
+    position: absolute;
+    left: 3px;
+    bottom: 2px;
+    max-width: calc(100% - 6px);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
